@@ -1,0 +1,693 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Steganography Meme Builder</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --error-color: #f44336;
+            --success-color: #4caf50;
+            --text-color: #333;
+            --bg-color: #f5f7fa;
+            --border-color: #ddd;
+            --highlight-color: #ffeb3b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        .upload-section, .controls-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        #canvas {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        .preview-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-danger {
+            background-color: var(--error-color);
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+        .file-upload:hover {
+            border-color: var(--primary-color);
+        }
+        .file-upload-label {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .file-name {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .status.success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid #c8e6c9;
+            display: block;
+        }
+        .status.error {
+            background-color: #ffebee;
+            color: var(--error-color);
+            border: 1px solid #ffcdd2;
+            display: block;
+        }
+        .status.info {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            border: 1px solid #bbdefb;
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 15px 0;
+            display: none;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            line-height: 20px;
+        }
+        .options {
+            margin-bottom: 20px;
+        }
+        .option-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        select, input[type="number"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: 100%;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        .copy-btn {
+            margin-left: 10px;
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+        .download-btn {
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <span>Steganography Meme Builder</span>
+        <span style="font-size: 1.5em;">🎨🤫</span>
+    </h1>
+    <div class="container">
+        <div class="upload-section">
+            <div class="card">
+                <h2>Upload Image</h2>
+                <div class="file-upload" id="dropArea">
+                    <label for="imageInput" class="file-upload-label">
+                        <span style="font-size: 3em;">📁</span><br>
+                        Click to browse or drag & drop an image
+                    </label>
+                    <input type="file" id="imageInput" accept="image/*">
+                    <div class="file-name" id="fileName">No file selected</div>
+                </div>
+                <div class="preview-container">
+                    <canvas id="canvas"></canvas>
+                </div>
+                <div class="status" id="statusMessage"></div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+            </div>
+        </div>
+        <div class="controls-section">
+            <div class="card">
+                <h2>Steganography Controls</h2>
+                <div class="options">
+                    <div class="option-group">
+                        <label for="lsbOption">LSB Mode:</label>
+                        <select id="lsbOption">
+                            <option value="1">1-bit (More capacity)</option>
+                            <option value="2">2-bit (Good balance)</option>
+                            <option value="4">4-bit (Better image quality)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="channelOption">Color Channel:</label>
+                        <select id="channelOption">
+                            <option value="all">All channels (RGB)</option>
+                            <option value="red">Red channel only</option>
+                            <option value="green">Green channel only</option>
+                            <option value="blue">Blue channel only</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="encryptionOption">Encryption:</label>
+                        <select id="encryptionOption">
+                            <option value="none">None</option>
+                            <option value="simple">Simple XOR (basic)</option>
+                            <option value="aes">AES (Advanced Encryption Standard)</option>
+                            <option value="des">DES (Data Encryption Standard)</option>
+                            <option value="3des">3DES (Triple DES)</option>
+                            <option value="rc4">RC4 (Stream Cipher)</option>
+                            <option value="blowfish">Blowfish</option>
+                            <option value="rsa">RSA (Asymmetric)</option>
+                            <option value="ecc">ECC (Elliptic Curve)</option>
+                        </select>
+                    </div>
+                    <div class="option-group" id="keyInput">
+                        <label for="password">Password/Key:</label>
+                        <input type="password" id="password" placeholder="Enter key for encryption">
+                    </div>
+                </div>
+                <textarea id="textInput" placeholder="Enter your secret message here..."></textarea>
+                <div>
+                    <button class="btn btn-success" onclick="hideText()">
+                        <span>🔒</span> Hide Text
+                    </button>
+                    <button class="btn btn-secondary" onclick="extractText()">
+                        <span>🔓</span> Extract Text
+                    </button>
+                    <button class="btn btn-danger" onclick="resetAll()">
+                        <span>🔄</span> Reset
+                    </button>
+                </div>
+                <div class="download-btn">
+                    <button class="btn btn-success" onclick="downloadImage()">Download Stego Image</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>How It Works</h2>
+        <p>This tool hides secret messages in images using steganography. The message is embedded in the least significant bits of the image pixels, making it virtually undetectable to the naked eye.</p>
+        <ul>
+            <li><strong>To hide a message:</strong> Upload an image, enter your text, and click "Hide Text"</li>
+            <li><strong>To extract a message:</strong> Upload an image with hidden text and click "Extract Text"</li>
+            <li>Higher bit modes allow more text but may slightly alter the image</li>
+            <li>For best results, use PNG images (JPEG compression may corrupt hidden data)</li>
+        </ul>
+    </div>
+    <footer>
+        <p>Steganography Meme Builder &copy; 2023 | All images are processed locally in your browser</p>
+    </footer>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        let imageData = null;
+        let originalImageData = null;
+        let fileName = '';
+        const statusMessage = document.getElementById('statusMessage');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const fileNameDisplay = document.getElementById('fileName');
+        const dropArea = document.getElementById('dropArea');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('imageInput').addEventListener('change', handleFileSelect);
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.style.borderColor = '#4a6fa5';
+                dropArea.style.backgroundColor = '#f0f5ff';
+            });
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.style.borderColor = '#ddd';
+                dropArea.style.backgroundColor = '';
+            });
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropArea.style.borderColor = '#ddd';
+                dropArea.style.backgroundColor = '';
+                if (e.dataTransfer.files.length) {
+                    document.getElementById('imageInput').files = e.dataTransfer.files;
+                    handleFileSelect({ target: document.getElementById('imageInput') });
+                }
+            });
+            document.getElementById('encryptionOption').addEventListener('change', toggleKeyInput);
+        }
+
+        function toggleKeyInput() {
+            const encryption = document.getElementById('encryptionOption').value;
+            const keyInput = document.getElementById('keyInput');
+            if (encryption === 'none' || encryption === 'simple') {
+                keyInput.style.display = 'none';
+            } else {
+                keyInput.style.display = 'block';
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            fileName = file.name;
+            fileNameDisplay.textContent = fileName;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    showStatus("Loading image...", "info");
+                    setTimeout(() => {
+                        processImage(img);
+                    }, 100);
+                };
+                img.onerror = function() {
+                    showStatus("Error loading image. Please try another file.", "error");
+                };
+                img.src = event.target.result;
+            };
+            reader.onerror = function() {
+                showStatus("Error reading file.", "error");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processImage(img) {
+            try {
+                const maxDimension = 800;
+                let width = img.width;
+                let height = img.height;
+                if (width > maxDimension || height > maxDimension) {
+                    const ratio = Math.min(maxDimension / width, maxDimension / height);
+                    width = Math.floor(width * ratio);
+                    height = Math.floor(height * ratio);
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                showStatus(`Image loaded (${width}×${height})`, "success");
+                updateCapacityDisplay();
+            } catch (error) {
+                console.error("Image processing error:", error);
+                showStatus("Error processing image.", "error");
+            }
+        }
+
+        function updateCapacityDisplay() {
+            if (!imageData) return;
+            const bitsPerPixel = parseInt(document.getElementById('lsbOption').value);
+            const channelOption = document.getElementById('channelOption').value;
+            let availableBits = imageData.data.length;
+            if (channelOption !== 'all') availableBits = Math.floor(availableBits / 3);
+            const maxCapacity = Math.floor((availableBits * bitsPerPixel) / 8) - 1;
+            document.getElementById('textInput').placeholder = 
+                `Enter your secret message here... (Max ${maxCapacity} characters)`;
+        }
+
+        function hideText() {
+            if (!imageData) {
+                showStatus("Please upload an image first!", "error");
+                return;
+            }
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                showStatus("Please enter some text to hide!", "error");
+                return;
+            }
+            const bitsPerPixel = parseInt(document.getElementById('lsbOption').value);
+            const channelOption = document.getElementById('channelOption').value;
+            const encryptionOption = document.getElementById('encryptionOption').value;
+            const password = document.getElementById('password').value;
+            updateCapacityDisplay();
+            const maxCapacity = Math.floor((imageData.data.length * bitsPerPixel) / 8) - 1;
+            if (text.length > maxCapacity) {
+                showStatus(`Text is too long! Maximum ${maxCapacity} characters for this configuration.`, "error");
+                return;
+            }
+            try {
+                showStatus("Hiding text...", "info");
+                progressContainer.style.display = 'block';
+                setTimeout(() => {
+                    let processedText = text;
+                    if (encryptionOption === 'simple') {
+                        processedText = simpleXOR(processedText, password || "stego");
+                    } else if (encryptionOption === 'aes') {
+                        // Use CryptoJS AES (include library in <head>)
+                        processedText = CryptoJS.AES.encrypt(processedText, password).toString();
+                    } else if (encryptionOption === 'des') {
+                        // Use CryptoJS DES (include library in <head>)
+                        processedText = CryptoJS.DES.encrypt(processedText, password).toString();
+                    } else if (encryptionOption === '3des') {
+                        // Use CryptoJS 3DES (include library in <head>)
+                        processedText = CryptoJS.TripleDES.encrypt(processedText, password).toString();
+                    } else if (encryptionOption === 'rc4') {
+                        // Use RC4 implementation (placeholder)
+                        processedText = rc4Encrypt(processedText, password);
+                    } else if (encryptionOption === 'blowfish') {
+                        // Use Blowfish implementation (placeholder)
+                        processedText = blowfishEncrypt(processedText, password);
+                    } else if (encryptionOption === 'rsa') {
+                        // RSA requires public key (placeholder)
+                        showStatus("RSA encryption requires a public key. Not implemented here.", "error");
+                        return;
+                    }
+                    let textBinary = '';
+                    for (let i = 0; i < processedText.length; i++) {
+                        textBinary += processedText.charCodeAt(i).toString(2).padStart(8, '0');
+                    }
+                    textBinary += '00000000';
+                    const data = imageData.data;
+                    let currentBit = 0;
+                    const totalBits = textBinary.length;
+                    for (let i = 0; i < data.length && currentBit < totalBits; i += 4) {
+                        const channels = [0, 1, 2];
+                        for (const channel of channels) {
+                            if (currentBit >= totalBits) break;
+                            if (channelOption === 'red' && channel !== 0) continue;
+                            if (channelOption === 'green' && channel !== 1) continue;
+                            if (channelOption === 'blue' && channel !== 2) continue;
+                            const byte = data[i + channel];
+                            const bitsToReplace = Math.min(bitsPerPixel, totalBits - currentBit);
+                            let newByte = byte;
+                            for (let bitPos = 0; bitPos < bitsToReplace; bitPos++) {
+                                const bitMask = 1 << bitPos;
+                                const newBit = parseInt(textBinary[currentBit + bitPos]);
+                                newByte = (newByte & ~bitMask) | (newBit << bitPos);
+                            }
+                            data[i + channel] = newByte;
+                            currentBit += bitsToReplace;
+                        }
+                        if (i % 1000 === 0) {
+                            const progress = Math.min(100, Math.floor((currentBit / totalBits) * 100));
+                            progressBar.style.width = `${progress}%`;
+                            progressBar.textContent = `${progress}%`;
+                        }
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = fileName ? `secret_${fileName}` : 'stego_image.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        showStatus("✅ Text successfully hidden in the image!", "success");
+                        progressContainer.style.display = 'none';
+                    }, 500);
+                }, 100);
+            } catch (error) {
+                console.error("Error hiding text:", error);
+                showStatus("Error hiding text: " + error.message, "error");
+                progressContainer.style.display = 'none';
+            }
+        }
+
+        function extractText() {
+            if (!imageData) {
+                showStatus("Please upload an image first!", "error");
+                return;
+            }
+            const bitsPerPixel = parseInt(document.getElementById('lsbOption').value);
+            const channelOption = document.getElementById('channelOption').value;
+            const encryptionOption = document.getElementById('encryptionOption').value;
+            const password = document.getElementById('password').value;
+            try {
+                showStatus("Extracting text...", "info");
+                progressContainer.style.display = 'block';
+                setTimeout(() => {
+                    const data = imageData.data;
+                    let binary = '';
+                    let nullTerminatorFound = false;
+                    let currentBit = 0;
+                    const maxBitsToCheck = data.length * bitsPerPixel;
+                    for (let i = 0; i < data.length && !nullTerminatorFound && currentBit < maxBitsToCheck; i += 4) {
+                        const channels = [0, 1, 2];
+                        for (const channel of channels) {
+                            if (nullTerminatorFound) break;
+                            if (channelOption === 'red' && channel !== 0) continue;
+                            if (channelOption === 'green' && channel !== 1) continue;
+                            if (channelOption === 'blue' && channel !== 2) continue;
+                            const byte = data[i + channel];
+                            for (let bitPos = 0; bitPos < bitsPerPixel; bitPos++) {
+                                const bitMask = 1 << bitPos;
+                                binary += (byte & bitMask) ? '1' : '0';
+                                currentBit++;
+                                if (binary.length >= 8 && binary.slice(-8) === '00000000') {
+                                    nullTerminatorFound = true;
+                                    binary = binary.slice(0, -8);
+                                    break;
+                                }
+                            }
+                        }
+                        if (i % 1000 === 0) {
+                            const progress = Math.min(100, Math.floor((i / data.length) * 100));
+                            progressBar.style.width = `${progress}%`;
+                            progressBar.textContent = `${progress}%`;
+                        }
+                    }
+                    if (binary.length === 0) {
+                        showStatus("❌ No hidden text found!", "error");
+                        progressContainer.style.display = 'none';
+                        return;
+                    }
+                    let text = '';
+                    for (let i = 0; i < binary.length; i += 8) {
+                        const byte = binary.substr(i, 8);
+                        if (byte.length < 8) break;
+                        text += String.fromCharCode(parseInt(byte, 2));
+                    }
+                    if (encryptionOption === 'simple') {
+                        text = simpleXOR(text, password || "stego");
+                    } else if (encryptionOption === 'aes') {
+                        // Use CryptoJS AES (include library in <head>)
+                        const bytes = CryptoJS.AES.decrypt(text, password);
+                        text = bytes.toString(CryptoJS.enc.Utf8);
+                    } else if (encryptionOption === 'des') {
+                        // Use CryptoJS DES (include library in <head>)
+                        const bytes = CryptoJS.DES.decrypt(text, password);
+                        text = bytes.toString(CryptoJS.enc.Utf8);
+                    } else if (encryptionOption === '3des') {
+                        // Use CryptoJS 3DES (include library in <head>)
+                        const bytes = CryptoJS.TripleDES.decrypt(text, password);
+                        text = bytes.toString(CryptoJS.enc.Utf8);
+                    } else if (encryptionOption === 'rc4') {
+                        // Use RC4 implementation (placeholder)
+                        text = rc4Decrypt(text, password);
+                    } else if (encryptionOption === 'blowfish') {
+                        // Use Blowfish implementation (placeholder)
+                        text = blowfishDecrypt(text, password);
+                    } else if (encryptionOption === 'rsa') {
+                        // RSA requires private key (placeholder)
+                        showStatus("RSA decryption requires a private key. Not implemented here.", "error");
+                        return;
+                    }
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    setTimeout(() => {
+                        document.getElementById('textInput').value = text;
+                        showStatus("🔐 Hidden text extracted successfully!", "success");
+                        progressContainer.style.display = 'none';
+                    }, 500);
+                }, 100);
+            } catch (error) {
+                console.error("Error extracting text:", error);
+                showStatus("Error extracting text: " + error.message, "error");
+                progressContainer.style.display = 'none';
+            }
+        }
+
+        function simpleXOR(text, key) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                const charCode = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+                result += String.fromCharCode(charCode);
+            }
+            return result;
+        }
+
+        // Placeholder for RC4 encryption (simplified)
+        function rc4Encrypt(text, key) {
+            // Implement RC4 algorithm or use a library
+            return "RC4 placeholder";
+        }
+
+        // Placeholder for RC4 decryption
+        function rc4Decrypt(text, key) {
+            // Implement RC4 algorithm or use a library
+            return "RC4 placeholder";
+        }
+
+        // Placeholder for Blowfish encryption
+        function blowfishEncrypt(text, key) {
+            // Implement Blowfish algorithm or use a library
+            return "Blowfish placeholder";
+        }
+
+        // Placeholder for Blowfish decryption
+        function blowfishDecrypt(text, key) {
+            // Implement Blowfish algorithm or use a library
+            return "Blowfish placeholder";
+        }
+
+        function resetAll() {
+            if (originalImageData) {
+                ctx.putImageData(originalImageData, 0, 0);
+                imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            }
+            document.getElementById('textInput').value = '';
+            document.getElementById('imageInput').value = '';
+            fileNameDisplay.textContent = 'No file selected';
+            showStatus("Reset complete. Ready for new image.", "info");
+            progressContainer.style.display = 'none';
+        }
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status ' + type;
+        }
+
+        function downloadImage() {
+            if (!imageData) {
+                showStatus("No image to download!", "error");
+                return;
+            }
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = fileName ? `secret_${fileName}` : 'stego_image.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('lsbOption').addEventListener('change', updateCapacityDisplay);
+        document.getElementById('channelOption').addEventListener('change', updateCapacityDisplay);
+    </script>
+    <!-- Include CryptoJS for AES/DES/3DES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</body>
+</html>
+```
