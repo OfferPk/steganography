@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SSN AUTO GENERATOR BY AREA 51</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* MATRIX BACKGROUND */
+    body.matrix {
+      background: black;
+      overflow: hidden;
+    }
+    
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    /* DARK MODE STYLES */
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: #eaeaea;
+    }
+    
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode button,
+    .dark-mode .bg-white,
+    .dark-mode .modal-window {
+      background-color: #2d2d2d;
+      color: #f1f1f1;
+      border-color: #444;
+    }
+    
+    .dark-mode .text-gray-500,
+    .dark-mode .text-gray-600,
+    .dark-mode .text-gray-700 {
+      color: #aaa !important;
+    }
+    
+    .dark-mode tr:hover {
+      background-color: #444;
+    }
+    
+    .dark-mode th {
+      background-color: #3c3c3c !important;
+    }
+    
+    /* TOGGLE SWITCHES */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    .toggle-switch input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    .toggle-switch input:checked + .slider::before {
+      transform: translateX(26px);
+    }
+    
+    /* GENERAL STYLING */
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      background: #f3f4f6;
+    }
+    
+    h3 span.area51 {
+      color: #dc2626;
+      font-weight: bold;
+    }
+    
+    .bg-white {
+      background: #fff;
+    }
+    
+    .rounded-lg {
+      border-radius: 0.75rem;
+    }
+    
+    .shadow-card {
+      box-shadow: 0 2px 8px rgba(59,130,246,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+    }
+    
+    input, select, button {
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    
+    input:focus, select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px #6366f1;
+    }
+    
+    button:active {
+      transform: scale(0.98);
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+    }
+    
+    th {
+      background: #f3f4f6;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    
+    tr:nth-child(even) {
+      background: #f9fafb;
+    }
+    
+    tr:hover {
+      background: #e0e7ef;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .items-center {
+      align-items: center;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .justify-center {
+      justify-content: center;
+    }
+    
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+    
+    .mt-3 {
+      margin-top: 0.75rem;
+    }
+    
+    .mt-4 {
+      margin-top: 1rem;
+    }
+    
+    .mb-3 {
+      margin-bottom: 0.75rem;
+    }
+    
+    .p-3 {
+      padding: 0.75rem;
+    }
+    
+    .w-full {
+      width: 100%;
+    }
+    
+    .text-purple-700 {
+      color: #7c3aed;
+    }
+    
+    .text-green-600 {
+      color: #16a34a;
+    }
+    
+    .text-gray-500 {
+      color: #6b7280;
+    }
+    
+    .text-gray-600 {
+      color: #4b5563;
+    }
+    
+    .text-red-line {
+      color: red;
+      font-weight: bold;
+    }
+    
+    .auto-gen-line {
+      border-left: 3px solid red;
+      padding-left: 10px;
+      font-family: monospace;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    /* Pulse animation for active generation */
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Tooltip styles */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Status indicators */
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .status-active {
+      background-color: #10B981;
+    }
+    
+    .status-inactive {
+      background-color: #EF4444;
+    }
+    
+    /* Custom checkbox */
+    .custom-checkbox {
+      position: relative;
+      padding-left: 25px;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #eee;
+      border-radius: 4px;
+    }
+    
+    .custom-checkbox:hover input ~ .checkmark {
+      background-color: #ccc;
+    }
+    
+    .custom-checkbox input:checked ~ .checkmark {
+      background-color: #2196F3;
+    }
+    
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .custom-checkbox input:checked ~ .checkmark:after {
+      display: block;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    /* Custom radio buttons */
+    .custom-radio {
+      position: relative;
+      padding-left: 25px;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .custom-radio input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    
+    .radiomark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #eee;
+      border-radius: 50%;
+    }
+    
+    .custom-radio:hover input ~ .radiomark {
+      background-color: #ccc;
+    }
+    
+    .custom-radio input:checked ~ .radiomark {
+      background-color: #2196F3;
+    }
+    
+    .radiomark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+    
+    .custom-radio input:checked ~ .radiomark:after {
+      display: block;
+    }
+    
+    .custom-radio .radiomark:after {
+      top: 6px;
+      left: 6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background-color: #4CAF50;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 4px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .tab.active {
+      border-bottom: 2px solid #2196F3;
+      color: #2196F3;
+      font-weight: bold;
+    }
+    
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1;
+      color: white;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 10px;
+    }
+    
+    .badge-primary {
+      background-color: #2196F3;
+    }
+    
+    .badge-success {
+      background-color: #4CAF50;
+    }
+    
+    .badge-danger {
+      background-color: #F44336;
+    }
+    
+    .badge-warning {
+      background-color: #FF9800;
+    }
+    
+    /* Custom dropdown */
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      border-radius: 4px;
+    }
+    
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+    
+    .custom-dropdown:hover .dropdown-content {
+      display: block;
+    }
+  </style>
+</head>
+<body class="matrix">
+
+<canvas id="matrixCanvas"></canvas>
+
+<!-- TOP HEADER -->
+<div class="p-4 flex justify-between items-center bg-black text-white">
+  <div class="flex items-center">
+    <i class="fas fa-user-secret text-purple-500 mr-2 text-xl"></i>
+    <h3 class="text-lg font-semibold mb-3 text-purple-700 flex items-center justify-center">
+      <span style="font-family: monospace; color: #ff4081;">[DEVELOPED BY AREA 51]</span>
+    </h3>
+  </div>
+  
+  <!-- TOGGLES -->
+  <div class="space-x-4 flex items-center">
+    <div class="tooltip">
+      <span class="text-xs mr-1">Dark Mode</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="darkModeToggle" />
+        <span class="slider"></span>
+      </label>
+      <span class="tooltiptext">Toggle dark/light mode</span>
+    </div>
+    
+    <div class="tooltip">
+      <span class="text-xs mr-1">Matrix</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="matrixToggle" checked />
+        <span class="slider"></span>
+      </label>
+      <span class="tooltiptext">Toggle matrix background</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="mb-4 bg-white p-6 rounded-lg shadow-lg mx-auto max-w-6xl">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- State Selection -->
+    <div>
+      <label class="block text-sm mb-1 font-semibold label-state">State for Auto-Generation</label>
+      <div class="relative">
+        <select id="autoGenStateSelect" class="w-full rounded border px-3 py-2 appearance-none bg-white">
+          <option value="Alabama">Alabama</option>
+          <option value="Alaska">Alaska</option>
+          <option value="Arizona">Arizona</option>
+          <option value="Arkansas">Arkansas</option>
+          <option value="California">California</option>
+          <option value="Colorado">Colorado</option>
+          <option value="Connecticut">Connecticut</option>
+          <option value="Delaware">Delaware</option>
+          <option value="Florida">Florida</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Hawaii">Hawaii</option>
+          <option value="Idaho">Idaho</option>
+          <option value="Illinois">Illinois</option>
+          <option value="Indiana">Indiana</option>
+          <option value="Iowa">Iowa</option>
+          <option value="Kansas">Kansas</option>
+          <option value="Kentucky">Kentucky</option>
+          <option value="Louisiana">Louisiana</option>
+          <option value="Maine">Maine</option>
+          <option value="Maryland">Maryland</option>
+          <option value="Massachusetts">Massachusetts</option>
+          <option value="Michigan">Michigan</option>
+          <option value="Minnesota">Minnesota</option>
+          <option value="Mississippi">Mississippi</option>
+          <option value="Missouri">Missouri</option>
+          <option value="Montana">Montana</option>
+          <option value="Nebraska">Nebraska</option>
+          <option value="Nevada">Nevada</option>
+          <option value="New Hampshire">New Hampshire</option>
+          <option value="New Jersey">New Jersey</option>
+          <option value="New Mexico">New Mexico</option>
+          <option value="New York">New York</option>
+          <option value="North Carolina">North Carolina</option>
+          <option value="North Dakota">North Dakota</option>
+          <option value="Ohio">Ohio</option>
+          <option value="Oklahoma">Oklahoma</option>
+          <option value="Oregon">Oregon</option>
+          <option value="Pennsylvania">Pennsylvania</option>
+          <option value="Rhode Island">Rhode Island</option>
+          <option value="South Carolina">South Carolina</option>
+          <option value="South Dakota">South Dakota</option>
+          <option value="Tennessee">Tennessee</option>
+          <option value="Texas">Texas</option>
+          <option value="Utah">Utah</option>
+          <option value="Vermont">Vermont</option>
+          <option value="Virginia">Virginia</option>
+          <option value="Washington">Washington</option>
+          <option value="West Virginia">West Virginia</option>
+          <option value="Wisconsin">Wisconsin</option>
+          <option value="Wyoming">Wyoming</option>
+          <option value="Random">Random (Other States)</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Interval Input -->
+    <div>
+      <label class="block text-sm mb-1 font-semibold label-interval">Generation Interval (seconds)</label>
+      <div class="flex items-center">
+        <input id="autoGenInterval" type="number" min="1" max="60" value="1" class="w-full rounded border px-3 py-2" />
+        <button id="decreaseInterval" class="ml-2 px-3 py-2 bg-gray-200 rounded-l">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button id="increaseInterval" class="px-3 py-2 bg-gray-200 rounded-r">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+      <p class="text-xs text-gray-600 mt-1">Min: 1s, Max: 60s</p>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="flex items-end space-x-2">
+      <button id="startAutoGenBtn"
+              class="bg-green-600 hover:bg-green-700 text-white font-bold rounded-md px-4 py-2 shadow flex items-center transition-colors">
+        <i class="fa fa-play mr-2"></i>Start Auto-Generation
+      </button>
+      <button id="stopAutoGenBtn"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold rounded-md px-4 py-2 shadow border-2 border-red-800 flex items-center hidden transition-colors">
+        <i class="fa fa-stop mr-2"></i>Stop
+      </button>
+      <button id="generateSingleBtn"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md px-4 py-2 shadow flex items-center transition-colors">
+        <i class="fas fa-bolt mr-2"></i>Generate Single
+      </button>
+    </div>
+  </div>
+  
+  <!-- Status -->
+  <div class="mt-4">
+    <div id="autoGenStatus" class="text-sm text-gray-600 flex items-center">
+      <span class="status-indicator status-inactive"></span>
+      Ready to start auto-generation
+    </div>
+    <div class="mt-3 flex space-x-2">
+      <button id="removeDuplicatesBtn"
+              class="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-md px-3 py-1 shadow flex items-center text-sm transition-colors">
+        <i class="fa fa-broom mr-1"></i>Remove Duplicate SSNs
+      </button>
+      <button id="exportCSVBtn"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-md px-3 py-1 shadow flex items-center text-sm transition-colors">
+        <i class="fas fa-file-export mr-1"></i>Export to CSV
+      </button>
+      <button id="clearAllBtn"
+              class="bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-md px-3 py-1 shadow flex items-center text-sm transition-colors">
+        <i class="fas fa-trash-alt mr-1"></i>Clear All
+      </button>
+    </div>
+  </div>
+  
+  <!-- Stats -->
+  <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-blue-50 p-3 rounded-lg">
+      <div class="text-xs text-blue-800">Total Generated</div>
+      <div id="totalGeneratedCount" class="text-2xl font-bold text-blue-900">0</div>
+    </div>
+    <div class="bg-green-50 p-3 rounded-lg">
+      <div class="text-xs text-green-800">Unique SSNs</div>
+      <div id="uniqueSSNsCount" class="text-2xl font-bold text-green-900">0</div>
+    </div>
+    <div class="bg-purple-50 p-3 rounded-lg">
+      <div class="text-xs text-purple-800">Last Generated</div>
+      <div id="lastGeneratedTime" class="text-sm font-bold text-purple-900">Never</div>
+    </div>
+  </div>
+</div>
+
+<!-- Show Generated SSNs Button -->
+<div class="mt-4 flex justify-center">
+  <button id="showGeneratedSSNsBtn"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md px-4 py-2 shadow flex items-center transition-colors">
+    <i class="fa fa-list mr-2"></i>Show Generated SSNs
+  </button>
+</div>
+
+<!-- Modal -->
+<div id="generatedSSNsModal" class="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center hidden">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 relative max-h-[90vh] flex flex-col">
+    <button id="closeGeneratedSSNsModal" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+    <h2 class="text-xl font-bold mb-4 text-purple-700 flex items-center">
+      <i class="fas fa-id-card mr-2"></i>Generated SSNs
+    </h2>
+    
+    <div class="mb-4 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <span id="generatedSSNsCount" class="text-sm text-gray-600"></span>
+        <div class="flex items-center space-x-2">
+          <button id="refreshGeneratedSSNsBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-3 py-1 text-sm font-semibold">
+            <i class="fa fa-refresh mr-1"></i> Refresh
+          </button>
+          <button id="copyAllSSNsBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded px-3 py-1 text-sm font-semibold">
+            <i class="fas fa-copy mr-1"></i> Copy All
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center">
+        <input type="text" id="ssnSearchInput" placeholder="Search SSNs..." class="border rounded px-3 py-1 text-sm">
+        <button id="ssnSearchBtn" class="ml-2 bg-blue-600 text-white px-3 py-1 rounded text-sm">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="progress-container mb-2 hidden" id="loadingProgress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div id="generatedSSNsList" class="flex-1 overflow-y-auto text-sm border rounded">
+      <!-- Content dynamically loaded -->
+    </div>
+    
+    <div class="mt-4 flex justify-between items-center">
+      <div class="text-xs text-gray-500">
+        Showing <span id="currentPage">1</span> of <span id="totalPages">1</span>
+      </div>
+      <div class="flex space-x-2">
+        <button id="prevPageBtn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" disabled>
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextPageBtn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" disabled>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toastNotification" class="toast"></div>
+
+<script>
+  // --- MATRIX ANIMATION ---
+  const matrixCanvas = document.getElementById('matrixCanvas');
+  const ctx = matrixCanvas.getContext('2d');
+  
+  let matrixActive = true;
+  let letters = "アァイィウヴエカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  letters = letters.split("");
+  let fontSize = 16;
+  let drops = [];
+  let columns = 0;
+  
+  function resizeMatrix() {
+    if (!matrixActive) return;
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+    columns = Math.floor(matrixCanvas.width / fontSize);
+    drops = Array(columns).fill(1);
+  }
+  
+  function drawMatrix() {
+    if (!matrixActive) return;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    
+    ctx.fillStyle = "#00FF00";
+    ctx.font = fontSize + "px monospace";
+    
+    for (let i = 0; i < drops.length; i++) {
+      let char = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+  
+  window.addEventListener("resize", resizeMatrix);
+  resizeMatrix();
+  setInterval(drawMatrix, 33);
+  
+  // --- TOGGLE CONTROLS ---
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const matrixToggle = document.getElementById("matrixToggle");
+  
+  darkModeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode");
+    showToast(`Dark mode ${darkModeToggle.checked ? 'enabled' : 'disabled'}`);
+  });
+  
+  matrixToggle.addEventListener("change", () => {
+    matrixActive = matrixToggle.checked;
+    if (!matrixActive) ctx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    showToast(`Matrix background ${matrixToggle.checked ? 'enabled' : 'disabled'}`);
+  });
+  
+  // --- IN-MEMORY DATA STORAGE ---
+  let ssnMarketplace = JSON.parse(localStorage.getItem('ssnMarketplace') || '[]');
+  let totalSSNsGenerated = parseInt(localStorage.getItem('totalSSNsGenerated') || '0');
+  let uniqueSSNs = new Set(ssnMarketplace.map(ssn => ssn.ssn));
+  
+  // --- TOAST NOTIFICATION ---
+  function showToast(message, type = 'info') {
+    const toast = document.getElementById('toastNotification');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+  
+  // --- UPDATE STATS DISPLAY ---
+  function updateStatsDisplay() {
+    document.getElementById('totalGeneratedCount').textContent = ssnMarketplace.length;
+    document.getElementById('uniqueSSNsCount').textContent = uniqueSSNs.size;
+    
+    if (ssnMarketplace.length > 0) {
+      const lastGenerated = new Date(ssnMarketplace[ssnMarketplace.length - 1].generatedAt);
+      document.getElementById('lastGeneratedTime').textContent = lastGenerated.toLocaleString();
+    } else {
+      document.getElementById('lastGeneratedTime').textContent = 'Never';
+    }
+  }
+  
+  // --- SSN Generation Functions ---
+  function generateRandomSSN() {
+    // First part (area number): 001-899 (excluding 666)
+    let area;
+    do {
+      area = Math.floor(Math.random() * 899) + 1;
+    } while (area === 666);
+    
+    // Second part (group number): 01-99
+    const group = Math.floor(Math.random() * 99) + 1;
+    
+    // Third part (serial number): 0001-9999
+    const serial = Math.floor(Math.random() * 9999) + 1;
+    
+    return `${area.toString().padStart(3, '0')}-${group.toString().padStart(2, '0')}-${serial.toString().padStart(4, '0')}`;
+  }
+  
+  function generateStateSSN(state) {
+    const ssn = generateRandomSSN();
+    return {
+      ssn: ssn,
+      state: state,
+      source: 'auto',
+      generatedAt: new Date().toISOString()
+    };
+  }
+  
+  const states = [
+    "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
+    "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky",
+    "Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi",
+    "Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico",
+    "New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania",
+    "Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont",
+    "Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+  ];
+  
+  const stateGenerators = {};
+  states.forEach(state => {
+    stateGenerators[`generate${state.replace(/\s/g, '')}SSN`] = () => generateStateSSN(state);
+  });
+  
+  window.generateRandomStateSSN = () => {
+    const rand = states[Math.floor(Math.random() * states.length)];
+    return stateGenerators[`generate${rand.replace(/\s/g, '')}SSN`]();
+  };
+  
+  Object.entries(stateGenerators).forEach(([fn, func]) => window[fn] = func);
+  
+  function isSSNDuplicate(ssn) {
+    return uniqueSSNs.has(ssn);
+  }
+  
+  function saveToLocalStorage() {
+    localStorage.setItem('ssnMarketplace', JSON.stringify(ssnMarketplace));
+    localStorage.setItem('totalSSNsGenerated', totalSSNsGenerated);
+    updateStatsDisplay();
+  }
+  
+  // --- PAGINATION ---
+  const ITEMS_PER_PAGE = 20;
+  let currentPage = 1;
+  
+  function getPaginatedData(page) {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return ssnMarketplace.slice(startIndex, endIndex);
+  }
+  
+  function updatePaginationControls() {
+    const totalPages = Math.ceil(ssnMarketplace.length / ITEMS_PER_PAGE);
+    document.getElementById('totalPages').textContent = totalPages;
+    document.getElementById('currentPage').textContent = currentPage;
+    
+    document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+    document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+  }
+  
+  // --- RENDER FUNCTIONS ---
+  function renderGeneratedSSNsList() {
+    const listDiv = document.getElementById('generatedSSNsList');
+    const countSpan = document.getElementById('generatedSSNsCount');
+    if (!listDiv) return;
+    
+    // Show loading progress
+    const loadingProgress = document.getElementById('loadingProgress');
+    const progressBar = document.getElementById('progressBar');
+    loadingProgress.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    
+    // Simulate loading for better UX
+    let progress = 0;
+    const loadingInterval = setInterval(() => {
+      progress += 5;
+      progressBar.style.width = `${progress}%`;
+      if (progress >= 100) {
+        clearInterval(loadingInterval);
+        loadingProgress.classList.add('hidden');
+      }
+    }, 50);
+    
+    if (!Array.isArray(ssnMarketplace) || ssnMarketplace.length === 0) {
+      listDiv.innerHTML = '<div class="text-gray-500 p-4 text-center">No SSNs generated yet.</div>';
+      if (countSpan) countSpan.textContent = '';
+      updatePaginationControls();
+      return;
+    }
+    
+    const paginatedData = getPaginatedData(currentPage);
+    
+    if (countSpan) countSpan.textContent = `Total: ${ssnMarketplace.length} (${uniqueSSNs.size} unique)`;
+    
+    listDiv.innerHTML = `
+      <table class="w-full border text-xs">
+        <thead>
+          <tr class="bg-gray-100 sticky top-0">
+            <th class="p-2 border">#</th>
+            <th class="p-2 border">SSN</th>
+            <th class="p-2 border">State</th>
+            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${paginatedData.map((ssn, idx) => {
+            const globalIndex = (currentPage - 1) * ITEMS_PER_PAGE + idx;
+            return `
+              <tr>
+                <td class="p-2 border text-center">${globalIndex + 1}</td>
+                <td class="p-2 border font-mono">${ssn.ssn}</td>
+                <td class="p-2 border">${ssn.state || '-'}</td>
+                <td class="p-2 border">${new Date(ssn.generatedAt).toLocaleString()}</td>
+                <td class="p-2 border text-center">
+                  <button class="copy-ssn-btn px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs" data-ssn="${ssn.ssn}">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button class="delete-ssn-btn px-2 py-1 bg-red-100 text-red-800 rounded text-xs ml-1" data-index="${globalIndex}">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>`;
+    
+    updatePaginationControls();
+    
+    // Add event listeners to copy buttons
+    document.querySelectorAll('.copy-ssn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ssn = btn.getAttribute('data-ssn');
+        navigator.clipboard.writeText(ssn);
+        showToast(`Copied SSN: ${ssn}`, 'success');
+      });
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-ssn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        ssnMarketplace.splice(index, 1);
+        uniqueSSNs = new Set(ssnMarketplace.map(ssn => ssn.ssn));
+        saveToLocalStorage();
+        renderGeneratedSSNsList();
+        showToast('SSN deleted', 'success');
+      });
+    });
+  }
+  
+  // --- EXPORT FUNCTIONS ---
+  function exportToCSV() {
+    if (ssnMarketplace.length === 0) {
+      showToast('No SSNs to export', 'error');
+      return;
+    }
+    
+    const csvRows = [['SSN', 'State', 'Date']];
+    ssnMarketplace.forEach(ssn => {
+      csvRows.push([ssn.ssn, ssn.state, new Date(ssn.generatedAt).toLocaleString()]);
+    });
+    
+    const csvContent = csvRows.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `ssn_export_${new Date().toISOString().slice(0,10)}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('CSV exported successfully', 'success');
+  }
+  
+  function copyAllSSNs() {
+    if (ssnMarketplace.length === 0) {
+      showToast('No SSNs to copy', 'error');
+      return;
+    }
+    
+    const allSSNs = ssnMarketplace.map(ssn => ssn.ssn).join('\n');
+    navigator.clipboard.writeText(allSSNs);
+    showToast(`Copied ${ssnMarketplace.length} SSNs to clipboard`, 'success');
+  }
+  
+  // --- AUTO-GENERATION LOGIC ---
+  let autoGenInterval = null;
+  let autoGenCount = 0;
+  
+  function startAutoGeneration() {
+    let interval = parseInt(document.getElementById('autoGenInterval').value);
+    if (interval < 1 || interval > 60) {
+      showToast('Please enter an interval between 1 and 60 seconds', 'error');
+      return;
+    }
+    
+    const state = document.getElementById('autoGenStateSelect').value;
+    document.getElementById('startAutoGenBtn').classList.add('hidden');
+    document.getElementById('stopAutoGenBtn').classList.remove('hidden');
+    document.getElementById('generateSingleBtn').classList.add('hidden');
+    document.getElementById('autoGenStatus').innerHTML = `
+      <span class="status-indicator status-active"></span>
+      Auto-generating ${state} SSNs...
+    `;
+    
+    // Add pulse animation to status
+    document.getElementById('autoGenStatus').classList.add('pulse-animation');
+    
+    autoGenCount = 0;
+    autoGenInterval = setInterval(() => {
+      let ssnData;
+      if (state === "Random") {
+        ssnData = generateRandomStateSSN();
+      } else {
+        ssnData = window[`generate${state.replace(/\s/g, '')}SSN`]();
+      }
+      
+      if (!isSSNDuplicate(ssnData.ssn)) {
+        ssnMarketplace.push(ssnData);
+        uniqueSSNs.add(ssnData.ssn);
+        totalSSNsGenerated++;
+        autoGenCount++;
+        document.getElementById('autoGenStatus').innerHTML = `
+          <span class="status-indicator status-active"></span>
+          Auto-generating ${state} SSNs... (${autoGenCount} generated)
+        `;
+        if (!document.getElementById('generatedSSNsModal').classList.contains('hidden')) {
+          renderGeneratedSSNsList();
+        }
+        saveToLocalStorage();
+      }
+    }, interval * 1000);
+    
+    showToast(`Started auto-generation for ${state}`, 'success');
+  }
+  
+  function stopAutoGeneration() {
+    if (autoGenInterval) {
+      clearInterval(autoGenInterval);
+      autoGenInterval = null;
+      document.getElementById('startAutoGenBtn').classList.remove('hidden');
+      document.getElementById('stopAutoGenBtn').classList.add('hidden');
+      document.getElementById('generateSingleBtn').classList.remove('hidden');
+      document.getElementById('autoGenStatus').innerHTML = `
+        <span class="status-indicator status-inactive"></span>
+        Auto-generation stopped. Generated ${autoGenCount} SSNs.
+      `;
+      
+      // Remove pulse animation
+      document.getElementById('autoGenStatus').classList.remove('pulse-animation');
+      
+      showToast(`Stopped auto-generation. Generated ${autoGenCount} SSNs.`, 'success');
+    }
+  }
+  
+  function generateSingleSSN() {
+    const state = document.getElementById('autoGenStateSelect').value;
+    let ssnData;
+    
+    if (state === "Random") {
+      ssnData = generateRandomStateSSN();
+    } else {
+      ssnData = window[`generate${state.replace(/\s/g, '')}SSN`]();
+    }
+    
+    if (!isSSNDuplicate(ssnData.ssn)) {
+      ssnMarketplace.push(ssnData);
+      uniqueSSNs.add(ssnData.ssn);
+      totalSSNsGenerated++;
+      saveToLocalStorage();
+      
+      if (!document.getElementById('generatedSSNsModal').classList.contains('hidden')) {
+        renderGeneratedSSNsList();
+      }
+      
+      showToast(`Generated SSN for ${state}: ${ssnData.ssn}`, 'success');
+    } else {
+      showToast('Generated duplicate SSN, trying again...', 'warning');
+      setTimeout(generateSingleSSN, 100); // Try again after short delay
+    }
+  }
+  
+  function removeDuplicateSSNs() {
+    if (ssnMarketplace.length === 0) {
+      showToast('No SSNs to process', 'error');
+      return;
+    }
+    
+    const uniqueMap = new Map();
+    ssnMarketplace.forEach(ssn => uniqueMap.set(ssn.ssn, ssn));
+    const originalCount = ssnMarketplace.length;
+    ssnMarketplace = Array.from(uniqueMap.values());
+    uniqueSSNs = new Set(ssnMarketplace.map(ssn => ssn.ssn));
+    saveToLocalStorage();
+    
+    const duplicatesRemoved = originalCount - ssnMarketplace.length;
+    showToast(`Removed ${duplicatesRemoved} duplicate SSNs`, 'success');
+    
+    if (!document.getElementById('generatedSSNsModal').classList.contains('hidden')) {
+      renderGeneratedSSNsList();
+    }
+  }
+  
+  function clearAllSSNs() {
+    if (ssnMarketplace.length === 0) {
+      showToast('No SSNs to clear', 'error');
+      return;
+    }
+    
+    if (confirm('Are you sure you want to delete ALL generated SSNs? This cannot be undone.')) {
+      ssnMarketplace = [];
+      uniqueSSNs = new Set();
+      totalSSNsGenerated = 0;
+      saveToLocalStorage();
+      showToast('All SSNs cleared', 'success');
+      
+      if (!document.getElementById('generatedSSNsModal').classList.contains('hidden')) {
+        renderGeneratedSSNsList();
+      }
+    }
+  }
+  
+  // --- SEARCH FUNCTIONALITY ---
+  function searchSSNs() {
+    const searchTerm = document.getElementById('ssnSearchInput').value.toLowerCase();
+    if (!searchTerm) {
+      renderGeneratedSSNsList();
+      return;
+    }
+    
+    const filtered = ssnMarketplace.filter(ssn => 
+      ssn.ssn.toLowerCase().includes(searchTerm) || 
+      (ssn.state && ssn.state.toLowerCase().includes(searchTerm))
+    );
+    
+    const listDiv = document.getElementById('generatedSSNsList');
+    if (filtered.length === 0) {
+      listDiv.innerHTML = '<div class="text-gray-500 p-4 text-center">No matching SSNs found</div>';
+      return;
+    }
+    
+    listDiv.innerHTML = `
+      <table class="w-full border text-xs">
+        <thead>
+          <tr class="bg-gray-100 sticky top-0">
+            <th class="p-2 border">#</th>
+            <th class="p-2 border">SSN</th>
+            <th class="p-2 border">State</th>
+            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filtered.map((ssn, idx) => `
+            <tr>
+              <td class="p-2 border text-center">${idx + 1}</td>
+              <td class="p-2 border font-mono">${ssn.ssn}</td>
+              <td class="p-2 border">${ssn.state || '-'}</td>
+              <td class="p-2 border">${new Date(ssn.generatedAt).toLocaleString()}</td>
+              <td class="p-2 border text-center">
+                <button class="copy-ssn-btn px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs" data-ssn="${ssn.ssn}">
+                  <i class="fas fa-copy"></i>
+                </button>
+                <button class="delete-ssn-btn px-2 py-1 bg-red-100 text-red-800 rounded text-xs ml-1" data-index="${ssnMarketplace.indexOf(ssn)}">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+    
+    // Add event listeners to buttons in search results
+    document.querySelectorAll('.copy-ssn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ssn = btn.getAttribute('data-ssn');
+        navigator.clipboard.writeText(ssn);
+        showToast(`Copied SSN: ${ssn}`, 'success');
+      });
+    });
+    
+    document.querySelectorAll('.delete-ssn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        ssnMarketplace.splice(index, 1);
+        uniqueSSNs = new Set(ssnMarketplace.map(ssn => ssn.ssn));
+        saveToLocalStorage();
+        searchSSNs(); // Refresh search results
+        showToast('SSN deleted', 'success');
+      });
+    });
+  }
+  
+  // --- EVENT LISTENERS ---
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize stats display
+    updateStatsDisplay();
+    
+    // Main buttons
+    document.getElementById('startAutoGenBtn').addEventListener('click', startAutoGeneration);
+    document.getElementById('stopAutoGenBtn').addEventListener('click', stopAutoGeneration);
+    document.getElementById('generateSingleBtn').addEventListener('click', generateSingleSSN);
+    document.getElementById('removeDuplicatesBtn').addEventListener('click', removeDuplicateSSNs);
+    document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
+    document.getElementById('clearAllBtn').addEventListener('click', clearAllSSNs);
+    
+    // Modal controls
+    document.getElementById('showGeneratedSSNsBtn').addEventListener('click', () => {
+      document.getElementById('generatedSSNsModal').classList.remove('hidden');
+      renderGeneratedSSNsList();
+    });
+    
+    document.getElementById('closeGeneratedSSNsModal').addEventListener('click', () => {
+      document.getElementById('generatedSSNsModal').classList.add('hidden');
+    });
+    
+    document.getElementById('refreshGeneratedSSNsBtn').addEventListener('click', renderGeneratedSSNsList);
+    document.getElementById('copyAllSSNsBtn').addEventListener('click', copyAllSSNs);
+    
+    // Pagination
+    document.getElementById('prevPageBtn').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderGeneratedSSNsList();
+      }
+    });
+    
+    document.getElementById('nextPageBtn').addEventListener('click', () => {
+      const totalPages = Math.ceil(ssnMarketplace.length / ITEMS_PER_PAGE);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderGeneratedSSNsList();
+      }
+    });
+    
+    // Search
+    document.getElementById('ssnSearchBtn').addEventListener('click', searchSSNs);
+    document.getElementById('ssnSearchInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        searchSSNs();
+      }
+    });
+    
+    // Interval controls
+    document.getElementById('increaseInterval').addEventListener('click', () => {
+      const input = document.getElementById('autoGenInterval');
+      let value = parseInt(input.value);
+      if (value < 60) {
+        input.value = value + 1;
+      }
+    });
+    
+    document.getElementById('decreaseInterval').addEventListener('click', () => {
+      const input = document.getElementById('autoGenInterval');
+      let value = parseInt(input.value);
+      if (value > 1) {
+        input.value = value - 1;
+      }
+    });
+    
+    // Close modal on ESC
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.getElementById('generatedSSNsModal').classList.add('hidden');
+      }
+    });
+  });
+</script>
+</body>
+</html>
