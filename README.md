@@ -119,3 +119,52 @@ code area
     </ul>
 </div>
 ```
+SSN Auto Generator by Area 51
+⚠️ Important Disclaimer: This project is for educational and demonstration purposes only. Generating fake Social Security Numbers (SSNs) is illegal in many jurisdictions. Do not use this tool for any unlawful activities.
+
+Overview
+A client-side SSN generator with advanced features demonstrating modern web development techniques. Includes realistic animations and data management capabilities.
+
+Features
+🎮 Interactive UI Elements
+
+Matrix background animation
+
+Dark/Light mode toggle
+
+State selection for SSN generation
+
+Auto-generation with adjustable intervals
+
+📊 Data Management
+
+Local storage persistence
+
+Duplicate detection
+
+CSV export functionality
+
+Bulk delete operations
+
+📈 Real-time Statistics
+
+Total generated counter
+
+Unique SSN tracking
+
+Generation timeline
+
+🔍 Advanced Search & Pagination
+
+Full-text search
+
+20 items per page
+
+Dynamic navigation controls
+
+Technologies Used
+Frontend: HTML5, CSS3 (Tailwind), JavaScript
+
+Libraries: Font Awesome, Tailwind CSS
+
+Storage: Browser LocalStorage
