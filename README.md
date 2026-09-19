@@ -1,170 +1,58 @@
-How It Works
-This tool uses steganography to hide secret messages within images. The message is embedded in the least significant bits (LSB) of the image's pixel data, making it invisible to the naked eye. The tool also supports symmetric encryption (XOR, AES) to protect the hidden data.
+# Steganography
 
-Key Features
-LSB Embedding: Modifies the least significant bits of pixel values to store hidden data.
-Channel Selection: Choose which color channel (RGB) to use for embedding.
-Encryption Options: Simple XOR for basic protection or AES for stronger encryption.
-Capacity Display: Shows maximum text length based on image size and settings.
-Step-by-Step Guide
-Upload an Image:
-Click the '📁' area or drag & drop a PNG image.
-Supported formats: PNG (lossless, best for steganography), JPEG (may distort data).
-Configure Settings:
-LSB Mode: Choose 1-bit (more data), 2-bit (balance), or 4-bit (better quality).
-Color Channel: Select 'All channels' or a specific channel (R/G/B).
-Encryption:
-'None': No encryption (default).
-'Simple XOR': Basic encryption with a password.
-'AES': Strong encryption (requires CryptoJS library).
-Enter Secret Message:
-Type your text in the 'Enter your secret message here...' box.
-The placeholder shows the maximum character limit based on your settings.
-Hide Text:
-Click '🔒 Hide Text' to embed the message in the image.
-A progress bar shows the embedding process.
-A download link appears when complete ('secret_[filename].png').
-Extract Text:
-Upload the steganographed image.
-Click '🔓 Extract Text' to retrieve the hidden message.
-If encrypted, enter the password for decryption.
-Reset:
-Click '🔄 Reset' to restore the original image and clear fields.
-Best Practices
-Use PNG images for optimal results (JPEG may corrupt data).
-Keep messages under the capacity limit (displayed in the text box).
-For encryption, use strong passwords and share them securely.
-Test with small messages first to verify functionality.
-Limitations
-Text must be ASCII-compatible (UTF-8 support limited).
-Large images may take longer to process.
-Encryption algorithms (AES) require external libraries.
-Hidden data is not secure against advanced analysis.
-code area 
-```html
-<div class="card">
-    <h2>How It Works</h2>
-    <p>This tool uses <strong>steganography</strong> to hide secret messages within images. The message is embedded in the <strong>least significant bits (LSB)</strong> of the image's pixel data, making it invisible to the naked eye. The tool also supports <strong>symmetric encryption</strong> (XOR, AES) to protect the hidden data.</p>
-    
-    <h3>Key Features</h3>
-    <ul>
-        <li><strong>LSB Embedding:</strong> Modifies the least significant bits of pixel values to store hidden data.</li>
-        <li><strong>Channel Selection:</strong> Choose which color channel (RGB) to use for embedding.</li>
-        <li><strong>Encryption Options:</strong> Simple XOR for basic protection or AES for stronger encryption.</li>
-        <li><strong>Capacity Display:</strong> Shows maximum text length based on image size and settings.</li>
-    </ul>
+Client-side tools for **image steganography** (LSB message hiding) and related local HTML demos. All processing runs in the browser; nothing is uploaded to a server.
 
-    <h3>Step-by-Step Guide</h3>
-    <ol>
-        <li><strong>Upload an Image:</strong>
-            <ul>
-                <li>Click the "📁" area or drag & drop a PNG image.</li>
-                <li>Supported formats: PNG (lossless, best for steganography), JPEG (may distort data).</li>
-            </ul>
-        </li>
-        <li><strong>Configure Settings:</strong>
-            <ul>
-                <li><strong>LSB Mode:</strong> Choose 1-bit (more data), 2-bit (balance), or 4-bit (better quality).</li>
-                <li><strong>Color Channel:</strong> Select "All channels" or a specific channel (R/G/B).</li>
-                <li><strong>Encryption:</strong> 
-                    <ul>
-                        <li>"None": No encryption (default).</li>
-                        <li>"Simple XOR": Basic encryption with a password.</li>
-                        <li>"AES": Strong encryption (requires CryptoJS library).</li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li><strong>Enter Secret Message:</strong>
-            <ul>
-                <li>Type your text in the "Enter your secret message here..." box.</li>
-                <li>The placeholder shows the maximum character limit based on your settings.</li>
-            </ul>
-        </li>
-        <li><strong>Hide Text:</strong>
-            <ul>
-                <li>Click "🔒 Hide Text" to embed the message in the image.</li>
-                <li>A progress bar shows the embedding process.</li>
-                <li>A download link appears when complete ("secret_[filename].png").</li>
-            </ul>
-        </li>
-        <li><strong>Extract Text:</strong>
-            <ul>
-                <li>Upload the steganographed image.</li>
-                <li>Click "🔓 Extract Text" to retrieve the hidden message.</li>
-                <li>If encrypted, enter the password for decryption.</li>
-            </ul>
-        </li>
-        <li><strong>Reset:</strong>
-            <ul>
-                <li>Click "🔄 Reset" to restore the original image and clear fields.</li>
-            </ul>
-        </li>
-    </ol>
+## Contents
 
-    <h3>Best Practices</h3>
-    <ul>
-        <li>Use <strong>PNG images</strong> for optimal results (JPEG may corrupt data).</li>
-        <li>Keep messages <strong>under the capacity limit</strong> (displayed in the text box).</li>
-        <li>For encryption, use <strong>strong passwords</strong> and share them securely.</li>
-        <li>Test with small messages first to verify functionality.</li>
-    </ul>
+| File | Description |
+|------|-------------|
+| [`index.html`](index.html) | Main steganography app — hide/extract text in images (LSB, optional XOR/AES-style options) |
+| `ssn-generator1.html` | Standalone SSN demo UI (v1) |
+| `ssn-generator3.html` | Standalone SSN demo UI (v3) |
+| `ssn-generator4.html` | Standalone SSN demo UI (v4) |
+| `ssn-genrator5.html` | Standalone SSN demo UI (v5; legacy filename typo preserved) |
+| `ssngenerator.html` | Earlier standalone SSN demo UI |
 
-    <h3>Limitations</h3>
-    <ul>
-        <li>Text must be <strong>ASCII-compatible</strong> (UTF-8 support limited).</li>
-        <li>Large images may take longer to process.</li>
-        <li>Encryption algorithms (AES) require external libraries.</li>
-        <li>Hidden data is <strong>not secure against advanced analysis</strong>.</li>
-    </ul>
-</div>
+Exact duplicate copies of the v1 generator were removed in this cleanup (`ssn-generator2.html`, `ssn-genrator6.html`).
+
+## Quick start (steganography)
+
+1. Open `index.html` in a modern browser (or serve the folder with any static file server).
+2. Upload a **PNG** image (preferred; JPEG compression can corrupt hidden data).
+3. Enter a message, choose LSB mode / channel / encryption options, then **Hide Text** or **Extract Text**.
+
+Optional: AES/DES/3DES options in the UI expect [CryptoJS](https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js) (already referenced from a CDN in `index.html`).
+
+### Steganography features
+
+- LSB embedding (1 / 2 / 4 bit)
+- Channel selection (RGB or single channel)
+- Optional simple XOR or CryptoJS-backed ciphers (some options are placeholders)
+- Capacity hint based on image size and settings
+- Local-only processing
+
+## SSN demo pages
+
+> **Disclaimer:** The SSN HTML pages are for educational / UI demonstration only. Generating or using fake Social Security Numbers for fraud or other unlawful activity is illegal. Do not use these demos for unlawful purposes.
+
+These pages are standalone static demos (localStorage, UI polish). This repository cleanup does **not** change their behavior or add new generation features.
+
+## Project layout
+
 ```
-SSN Auto Generator by Area 51
-⚠️ Important Disclaimer: This project is for educational and demonstration purposes only. Generating fake Social Security Numbers (SSNs) is illegal in many jurisdictions. Do not use this tool for any unlawful activities.
+.
+├── README.md
+├── .gitignore
+├── index.html              # steganography app
+├── ssngenerator.html
+├── ssn-generator1.html
+├── ssn-generator3.html
+├── ssn-generator4.html
+└── ssn-genrator5.html
+```
 
-Overview
-A client-side SSN generator with advanced features demonstrating modern web development techniques. Includes realistic animations and data management capabilities.
+No build step or package manager is required — plain HTML/CSS/JS.
 
-Features
-🎮 Interactive UI Elements
+## License / use
 
-Matrix background animation
-
-Dark/Light mode toggle
-
-State selection for SSN generation
-
-Auto-generation with adjustable intervals
-
-📊 Data Management
-
-Local storage persistence
-
-Duplicate detection
-
-CSV export functionality
-
-Bulk delete operations
-
-📈 Real-time Statistics
-
-Total generated counter
-
-Unique SSN tracking
-
-Generation timeline
-
-🔍 Advanced Search & Pagination
-
-Full-text search
-
-20 items per page
-
-Dynamic navigation controls
-
-Technologies Used
-Frontend: HTML5, CSS3 (Tailwind), JavaScript
-
-Libraries: Font Awesome, Tailwind CSS
-
-Storage: Browser LocalStorage
+Use responsibly and in accordance with applicable law. Prefer educational and personal experimentation only.
